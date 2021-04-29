@@ -3,8 +3,10 @@ package com.github.sarhatabaot.message;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -88,7 +90,7 @@ public class MessageCommand extends BaseCommand {
     @CommandAlias("message")
     public class PluginCommands extends BaseCommand {
 
-        @CommandAlias("reload")
+        @Subcommand("reload")
         @CommandPermission("message.reload")
         public void onReload(final ProxiedPlayer player) {
             try {
@@ -105,7 +107,7 @@ public class MessageCommand extends BaseCommand {
             commandHelp.showHelp();
         }
 
-        @CommandAlias("toggle")
+        @Subcommand("toggle")
         @CommandPermission("message.toggle")
         public void onToggle(final ProxiedPlayer player) {
             if (plugin.isToggled(player)) {
