@@ -84,6 +84,8 @@ public class MessageCommand extends BaseCommand {
             plugin.getLogger().info(player.getName() + " -> " + receiver.getPlayer().getName() + " : " + message);
         } catch (MessagePlayer.PlayerNotOnlineException exception) {
             player.sendMessage("Player is not online anymore.");
+        } catch (NullPointerException nullPointerException){
+            player.sendMessage("You don't have anyone to reply to.");
         }
     }
 
