@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
@@ -36,12 +37,19 @@ public class MessageCommand extends BaseCommand {
 
     }
 
+    @Default
     @CommandAlias("msg")
     @CommandPermission("message.message")
+    @CommandCompletion("@players")
     public void onMessage(final ProxiedPlayer player, final OnlinePlayer receiver, final String message) {
         if (plugin.isToggled(receiver.getPlayer()) && !player.hasPermission("message.toggle.bypass")) {
             //this player has toggles off their messages
             player.sendMessage(receiver.getPlayer().getName() + " has messages toggled off.");
+            return;
+        }
+
+        if (player.equals(receiver.getPlayer())) {
+            player.sendMessage("You can't send a message to yourself.");
             return;
         }
 
@@ -53,6 +61,7 @@ public class MessageCommand extends BaseCommand {
         cacheLastPlayer(player.getUniqueId(), new MessagePlayer(receiver));
     }
 
+
     private void cacheLastPlayer(final UUID uuid, final MessagePlayer messagePlayer) {
         if (!plugin.getPlayerCache().containsKey(uuid))
             plugin.getPlayerCache().put(uuid, messagePlayer);
@@ -61,7 +70,7 @@ public class MessageCommand extends BaseCommand {
     }
 
     private String formatMessage(final ProxiedPlayer sender, final OnlinePlayer receiver, final String format, final String message) {
-        return ChatColor.translateAlternateColorCodes('&',format.replace("%sender_name%", sender.getName())
+        return ChatColor.translateAlternateColorCodes('&', format.replace("%sender_name%", sender.getName())
                 .replace("%sender_display_name%", sender.getDisplayName())
                 .replace("%sender_server%", formatServerName(sender.getServer().getInfo().getName()))
                 .replace("%receiver_name%", receiver.getPlayer().getName())
@@ -84,7 +93,7 @@ public class MessageCommand extends BaseCommand {
             plugin.getLogger().info(player.getName() + " -> " + receiver.getPlayer().getName() + " : " + message);
         } catch (MessagePlayer.PlayerNotOnlineException exception) {
             player.sendMessage("Player is not online anymore.");
-        } catch (NullPointerException nullPointerException){
+        } catch (NullPointerException nullPointerException) {
             player.sendMessage("You don't have anyone to reply to.");
         }
     }
@@ -100,6 +109,7 @@ public class MessageCommand extends BaseCommand {
                 player.sendMessage("Reloaded the configuration files.");
             } catch (IOException exception) {
                 plugin.getLogger().severe("Could not load config.yml, disabling plugin.");
+                plugin.getLogger().severe(exception.getMessage());
                 player.sendMessage("Could not reload config.yml, check for yaml mistakes.");
             }
         }
@@ -119,7 +129,11 @@ public class MessageCommand extends BaseCommand {
             plugin.getToggleCache().put(player.getUniqueId(), true);
             player.sendMessage("Toggles messages off.");
         }
+
+
     }
 
-
 }
+
+
+

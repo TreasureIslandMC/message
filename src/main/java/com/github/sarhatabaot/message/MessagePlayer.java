@@ -1,6 +1,7 @@
 package com.github.sarhatabaot.message;
 
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Objects;
 
@@ -12,6 +13,10 @@ public class MessagePlayer {
 
     public MessagePlayer(final OnlinePlayer lastReceiver) {
         this.lastReceiver = lastReceiver;
+    }
+
+    public MessagePlayer(final ProxiedPlayer lastReceiver) {
+        this.lastReceiver = new OnlinePlayer(lastReceiver);
     }
 
     public OnlinePlayer getLastReceiver() {
