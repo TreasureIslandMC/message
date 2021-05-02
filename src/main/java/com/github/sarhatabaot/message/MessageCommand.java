@@ -1,5 +1,6 @@
 package com.github.sarhatabaot.message;
 
+import co.aikar.commands.ACFBungeeUtil;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
@@ -7,9 +8,12 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.apachecommonslang.ApacheCommonsLangUtil;
 import co.aikar.commands.bungee.contexts.OnlinePlayer;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -17,6 +21,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -130,8 +135,26 @@ public class MessageCommand extends BaseCommand {
             player.sendMessage("Toggles messages off.");
         }
 
+        @Subcommand("onlineplayers")
+        public void onLogTest(final ProxiedPlayer sender,@Optional String input) {
+            ACFBungeeUtil.validate(sender, "Sender cannot be null");
 
+            ArrayList<String> matchedPlayers = new ArrayList<>();
+            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                String name = player.getName();
+                if (input == null) {
+                    matchedPlayers.add(name);
+                } else if(ApacheCommonsLangUtil.startsWithIgnoreCase(name, input)) {
+                    matchedPlayers.add(name);
+                }
+            }
+
+            matchedPlayers.sort(String.CASE_INSENSITIVE_ORDER);
+            plugin.getLogger().info(matchedPlayers.toString());
+        }
     }
+
+    
 
 }
 
